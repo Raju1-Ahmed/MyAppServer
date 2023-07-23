@@ -35,27 +35,24 @@ exports.getAllFiles = async (req, res, next) => {
   }
 };
 
+exports.deleteFile = async (req, res, next) => {
+  try {
+    const fileId = req.params.id;
+    const file = await PDF.findById(fileId);
 
-// exports.downloadFile = async (req, res, next) => {
-//   try {
-//     const fileId = req.params.id;
-//     const file = await PDF.findById(fileId);
+    if (!file) {
+      return res.status(404).json({ message: 'File not found' });
+    }
 
-//     if (!file) {
-//       return res.status(404).json({ message: 'File not found' });
-//     }
+    // Remove the file from the database
+    await file.remove();
 
-//     res.download(file.filePath, file.filename, (err) => {
-//       if (err) {
-//         console.error('Error while downloading:', err);
-//         return res.status(500).json({ message: 'Error while downloading the file' });
-//       }
-//     });
-//   } catch (err) {
-//     console.error('Error while fetching the file:', err);
-//     res.status(500).json({ message: 'Error while fetching the file' });
-//   }
-// };
+    res.json({ message: 'File deleted successfully' });
+  } catch (err) {
+    console.error('Error while deleting the file:', err);
+    res.status(500).json({ message: 'Error while deleting the file' });
+  }
+};
 
 
 exports.downloadFile = async (req, res, next) => {
