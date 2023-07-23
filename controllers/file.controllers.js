@@ -34,14 +34,49 @@ exports.getAllFiles = async (req, res, next) => {
     res.status(400).send('Error while getting list of files. Try again later.');
   }
 };
+
+
+// exports.downloadFile = async (req, res, next) => {
+//   try {
+//     const fileId = req.params.id;
+//     const file = await PDF.findById(fileId);
+
+//     if (!file) {
+//       return res.status(404).json({ message: 'File not found' });
+//     }
+
+//     res.download(file.filePath, file.filename, (err) => {
+//       if (err) {
+//         console.error('Error while downloading:', err);
+//         return res.status(500).json({ message: 'Error while downloading the file' });
+//       }
+//     });
+//   } catch (err) {
+//     console.error('Error while fetching the file:', err);
+//     res.status(500).json({ message: 'Error while fetching the file' });
+//   }
+// };
+
+
 exports.downloadFile = async (req, res, next) => {
   try {
-    const file = await File.findById(req.params.id);
-    res.set({
-      'Content-Type': file.file_mimetype
+    const fileId = req.params.id;
+    const file = await PDF.findById(fileId);
+
+    if (!file) {
+      return res.status(404).json({ message: 'File not found' });
+    }
+
+    console.log('File data:', file); // Add a log to check the file data
+
+    res.download(file.filePath, file.filename, (err) => {
+      if (err) {
+        console.error('Error while downloading:', err);
+        return res.status(500).json({ message: 'Error while downloading the file' });
+      }
     });
-    res.sendFile(path.join(__dirname, '..', file.file_path));
-  } catch (error) {
-    res.status(400).send('Error while downloading file. Try again later.');
+  } catch (err) {
+    console.error('Error while fetching the file:', err);
+    res.status(500).json({ message: 'Error while fetching the file' });
   }
 };
