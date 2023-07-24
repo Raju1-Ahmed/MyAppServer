@@ -1,6 +1,7 @@
 // controllers/file.controller.js
 const PDF = require('../models/model.js');
 const fs = require('fs'); // Add this line to import the 'fs' module
+const Product = require('../models/productModal.js');
 
 
 exports.fileUpload = async (req, res, next) => {
@@ -75,5 +76,82 @@ exports.downloadFile = async (req, res, next) => {
   } catch (err) {
     console.error('Error while fetching the file:', err);
     res.status(500).json({ message: 'Error while fetching the file' });
+  }
+};
+
+exports.createProduct = async (req, res, next) => {
+  try {
+    const {
+      name,
+      description,
+      demoURL,
+      serverURL,
+      clientURL,
+      date,
+      video,
+      futureField,
+    } = req.body;
+
+    const product = new Product({
+      name,
+      description,
+      demoURL,
+      serverURL,
+      clientURL,
+      date,
+      video,
+      futureField,
+    });
+
+    await product.save();
+
+    res.status(201).json({ message: 'Product created successfully' });
+  } catch (err) {
+    console.error('Error creating product:', err);
+    res.status(500).json({ message: 'Error creating product' });
+  }
+};
+
+// Get all products
+exports.getProducts = async (req, res, next) => {
+  try {
+    const products = await Product.find();
+    res.status(200).json(products);
+  } catch (err) {
+    console.error('Error while fetching products:', err);
+    res.status(500).json({ message: 'Error while fetching products' });
+  }
+};
+
+exports.deleteProduct = async (req, res, next) => {
+  try {
+    const productId = req.params.id;
+    const product = await Product.findById(productId);
+
+    if (!product) {
+      return res.status(404).json({ message: 'Product not found' });
+    }
+
+    // Delete the product from the database
+    await product.remove();
+
+    res.json({ message: 'Product deleted successfully' });
+  } catch (err) {
+    console.error('Error while deleting the product:', err);
+    res.status(500).json({ message: 'Error while deleting the product' });
+  }
+};
+
+
+
+// filtering start here 
+exports.getFrontendProducts = async (req, res, next) => {
+  try {
+    const frontendProducts = await Product.find({ futureField: 'Frontend' });
+
+    res.status(200).json(frontendProducts);
+  } catch (err) {
+    console.error('Error fetching frontend products:', err);
+    res.status(500).json({ message: 'Error fetching frontend products' });
   }
 };

@@ -4,6 +4,7 @@ const cors = require("cors");
 const mongoose = require("mongoose");
 const fileUpload = require('./routes/fileupload.route');
 const fileDownload = require('./routes/fileupload.route');
+const products = require('./routes/fileupload.route');
 
 
 
@@ -17,6 +18,7 @@ app.get("/", (req, res) => {
   res.send("Route is working! YaY!");
 });
 
+app.use('/api/v1/file', products)
 app.use('/api/v1/fileUpload', fileUpload)
 app.use('/api/v1/file', fileDownload);
 
