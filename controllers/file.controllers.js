@@ -112,6 +112,7 @@ exports.createProduct = async (req, res, next) => {
   }
 };
 
+
 // Get all products
 exports.getProducts = async (req, res, next) => {
   try {
@@ -122,6 +123,7 @@ exports.getProducts = async (req, res, next) => {
     res.status(500).json({ message: 'Error while fetching products' });
   }
 };
+
 
 exports.deleteProduct = async (req, res, next) => {
   try {
